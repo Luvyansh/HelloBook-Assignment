@@ -17,7 +17,7 @@ User Question
 [FAISS Vector Store]    ← L2 similarity search
      │  (retrieve top-3 chunks)
      ▼
-[Google Gemini 1.5 Flash] ← free tier, fast
+[Google Gemini 2.0 Flash] ← free tier, fast
      │  (generate grounded answer)
      ▼
 Answer + Sources
@@ -28,7 +28,7 @@ Answer + Sources
 |---|---|---|
 | Embeddings | `sentence-transformers/all-MiniLM-L6-v2` | Tiny (22MB), fast, high quality |
 | Vector Store | `FAISS` (CPU) | Lightweight, no server needed |
-| LLM | `Google Gemini 1.5 Flash` | Free tier, fast, smart |
+| LLM | `Google Gemini 2.0 Flash` | Free tier, fast, smart |
 | API Server | `FastAPI` | Modern, async, auto-docs |
 
 ---
@@ -61,8 +61,8 @@ Answer + Sources
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/hellobooks-ai.git
-cd hellobooks-ai
+git clone https://github.com/Luvyansh/Hellobooks-AI.git
+cd Hellobooks-AI
 
 # 2. Create and activate virtual environment
 python -m venv venv
@@ -72,7 +72,7 @@ source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # 4. Create a .env file in the project root and add your key:
-# GOOGLE_API_KEY=your-api-key-here
+# GEMINI_API_KEY=your-api-key-here
 
 # 5. Run the CLI assistant
 python rag.py
@@ -124,7 +124,7 @@ curl -X POST http://localhost:8000/ask \
 
 ```bash
 # 1. Make sure your .env file exists with your key:
-# GOOGLE_API_KEY=your-api-key-here
+# GEMINI_API_KEY=your-api-key-here
 
 # 2. Build and run with Docker Compose
 docker-compose up --build
@@ -155,7 +155,7 @@ docker run -p 8000:8000 --env-file .env hellobooks-ai
 ## 🗂️ Project Structure
 
 ```
-hellobooks-rag/
+Hellobooks-AI/
 ├── knowledge_base/               # Task 1: Knowledge base documents
 │   ├── bookkeeping.md
 │   ├── invoices.md
@@ -212,7 +212,7 @@ CHUNK_SIZE = 500        # Characters per chunk
 CHUNK_OVERLAP = 100     # Overlap between chunks
 TOP_K = 3               # Number of chunks to retrieve
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
-LLM_MODEL = "gemini-1.5-flash"
+LLM_MODEL = "gemini-2.0-flash"
 ```
 
 ---
@@ -220,7 +220,7 @@ LLM_MODEL = "gemini-1.5-flash"
 ## 📦 Dependencies
 
 ```
-google-generativeai     - Gemini Flash LLM API (free tier)
+google-genai            - Gemini 2.0 Flash LLM API (free tier)
 sentence-transformers   - Embedding model
 faiss-cpu               - Vector similarity search
 fastapi                 - REST API framework
@@ -238,7 +238,89 @@ python-dotenv           - Load .env API keys
 - The embedding model downloads once (~22MB) and is cached locally
 - All 7 knowledge base documents are chunked into ~41 segments total
 - **Never commit your `.env` file** — it's already in `.gitignore`
-- Gemini 1.5 Flash free tier allows **1,500 requests/day**
+- Gemini 2.0 Flash free tier allows **1,500 requests/day**
+
+---
+
+## 📸 Screenshots
+
+### 🖥️ CLI Mode
+
+> Running the assistant directly from the terminal using `python rag.py`
+
+<p align="center">
+  <img width="80%" alt="CLI startup - RAG system initializing" src="https://github.com/user-attachments/assets/196383ef-7a89-420f-83c4-b97ebc29b79b" />
+  <br/>
+  <em>RAG system initializing — loading documents, generating embeddings, building FAISS index</em>
+</p>
+
+<br/>
+
+<p align="center">
+  <img width="80%" alt="CLI question and answer" src="https://github.com/user-attachments/assets/02255aee-311f-4c60-a966-4cfe68c1c0b9" />
+  <br/>
+  <em>Asking an accounting question and receiving a grounded answer with sources</em>
+</p>
+
+<br/>
+
+<p align="center">
+  <img width="80%" alt="CLI follow-up question" src="https://github.com/user-attachments/assets/ebdd16f5-eb0a-40b5-85e3-dc8afaaf53a2" />
+  <br/>
+  <em>Follow-up question demonstrating multi-topic retrieval</em>
+</p>
+
+---
+
+### 🐳 Docker Mode
+
+> Running the API server via `docker-compose up --build` and interacting through Swagger UI at `localhost:8000/docs`
+
+<p align="center">
+  <img width="80%" alt="Docker Desktop - container running" src="https://github.com/user-attachments/assets/8c30aa9e-eb20-4b6c-8235-a7cd3807ed15" />
+  <br/>
+  <em>Docker Desktop showing the hellobooks-ai container running on port 8000</em>
+</p>
+
+<br/>
+
+<p align="center">
+  <img width="80%" alt="Swagger UI - API docs" src="https://github.com/user-attachments/assets/084c1abb-6432-4925-9a68-e6f5b787d2c1" />
+  <br/>
+  <em>Auto-generated Swagger UI at <code>localhost:8000/docs</code> — interactive API documentation</em>
+</p>
+
+<br/>
+
+<p align="center">
+  <img width="80%" alt="POST /ask endpoint" src="https://github.com/user-attachments/assets/9013c970-caf2-4876-95d4-aa8f80df7474" />
+  <br/>
+  <em>Testing the <code>POST /ask</code> endpoint with a bookkeeping question</em>
+</p>
+
+<br/>
+
+<p align="center">
+  <img width="80%" alt="API response with answer and sources" src="https://github.com/user-attachments/assets/f31afd56-449d-45a0-b5aa-832ca51e31f3" />
+  <br/>
+  <em>API response showing the generated answer, sources used, and retrieved chunks</em>
+</p>
+
+<br/>
+
+<p align="center">
+  <img width="80%" alt="GET /topics endpoint" src="https://github.com/user-attachments/assets/e298ae8d-c25d-4808-94de-30062fc52a25" />
+  <br/>
+  <em><code>GET /topics</code> endpoint listing all available knowledge base topics</em>
+</p>
+
+<br/>
+
+<p align="center">
+  <img width="80%" alt="GET /health endpoint" src="https://github.com/user-attachments/assets/55eb9bda-a351-400c-99d3-973b31220811" />
+  <br/>
+  <em><code>GET /health</code> endpoint confirming the RAG system is initialized and ready</em>
+</p>
 
 ---
 
